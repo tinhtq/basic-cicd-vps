@@ -26,7 +26,7 @@ jobs:
       - name: Set SHA-COMMIT
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Build and push
+      - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
           context: back
@@ -36,15 +36,15 @@ jobs:
             ghcr.io/tinhtq/example-project-backend:latest
             ghcr.io/tinhtq/example-project-backend:${{ steps.vars.outputs.sha_short }}
 
-            - name: Build and push
-            uses: docker/build-push-action@v5
-            with:
-              context: front
-              platforms: linux/amd64
-              push: true
-              tags: |
-                ghcr.io/tinhtq/example-project-frontend:latest
-                ghcr.io/tinhtq/example-project-frontend:${{ steps.vars.outputs.sha_short }}
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: front
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/tinhtq/example-project-frontend:latest
+            ghcr.io/tinhtq/example-project-frontend:${{ steps.vars.outputs.sha_short }}
 
   # deploy:
   #   needs: build
