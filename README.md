@@ -2,11 +2,6 @@
 
 ## Process
 
-- Fork this repository to your personal GitHub account. If you prefer, you may create your own private repository instead.
-- Complete your project and push your code to your repository.
-- Send a link to your public repo to devexercise@theblock.co or invite [@sachatememe](https://github.com/sachatememe), [@Mike](https://github.com/web-mech) and [@AlexeyGolubeff](https://github.com/AlexeyGolubeff) as collaborators if it is private.
-- We will schedule the final interview to review and discuss.
-
 ## Project Requirements
 
 ### Overview
@@ -25,30 +20,31 @@ If you have questions or something seems "not right", please reach out via email
 ### Application details
 
 - `back` app
-    - Requires these ENV vars:
-        - `REDIS_SERVER` - Address of Redis container in the form of `<host>:<port>`
-    - Binds to port
-        - `4000`
-    - Provides these endpoints:
-        - `/api/clicks` - Returns current click count
-        - `/api/clicks/incr` - Increments click count by 1 and returns new click count
-        - `/api/ping` - Returns static "pong" response
+  - Requires these ENV vars:
+    - `REDIS_SERVER` - Address of Redis container in the form of `<host>:<port>`
+  - Binds to port
+    - `4000`
+  - Provides these endpoints:
+    - `/api/clicks` - Returns current click count
+    - `/api/clicks/incr` - Increments click count by 1 and returns new click count
+    - `/api/ping` - Returns static "pong" response
 - `front` app
-    - Requires these ENV vars:
-        - `BACKEND_API_URL` - Address of the Back container reachable from the server-side in the form of `http://<host>`
-        - `CLIENT_API_URL` -  Address of the Back container reachable from the client-side in the form of `http://<host>`
-        - Note: depending on how you've networked the containers, these to vars could be the same
-    - Binds to port
-        -  `3000`
-    - Provides:
-        - `/`  - Click counter display/UI
-        - `/ping` - Returns static "pong" response
+
+  - Requires these ENV vars:
+    - `BACKEND_API_URL` - Address of the Back container reachable from the server-side in the form of `http://<host>`
+    - `CLIENT_API_URL` - Address of the Back container reachable from the client-side in the form of `http://<host>`
+    - Note: depending on how you've networked the containers, these to vars could be the same
+  - Binds to port
+    - `3000`
+  - Provides:
+    - `/` - Click counter display/UI
+    - `/ping` - Returns static "pong" response
 
 - `redis` image
-    - Requires these ENV vars:
-        - None
-    - Binds to port
-        - `6379`
+  - Requires these ENV vars:
+    - None
+  - Binds to port
+    - `6379`
 
 ### Extra credit
 
@@ -62,7 +58,6 @@ If you have questions or something seems "not right", please reach out via email
 https://devops-exercise.tblk.us
 
 ![image](https://user-images.githubusercontent.com/68586/162465910-892c2e8d-be41-4852-87c7-9ead1ca2e966.png)
-
 
 ## Interview
 

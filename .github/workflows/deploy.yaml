@@ -46,20 +46,20 @@ jobs:
             ghcr.io/tinhtq/example-project-frontend:latest
             ghcr.io/tinhtq/example-project-frontend:${{ steps.vars.outputs.sha_short }}
 
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 5
-  #   steps:
-  #     - name: Deploy
-  #       uses: appleboy/ssh-action@v1.0.3
-  #       with:
-  #         host: ${{ secrets.EC2_HOST }}
-  #         username: ${{ secrets.EC2_USERNAME }}
-  #         key: ${{ secrets.KEY }}
-  #         port: ${{ secrets.PORT }}
-  #         command_timeout: 30m
-  #         script: |
-  #           cd ${{ vars.DIRECTORY }}
-  #           docker compose pull
-  #           docker compose up -d
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          command_timeout: 30m
+          script: |
+            cd ${{ vars.DIRECTORY }}
+            docker compose pull
+            docker compose up -d

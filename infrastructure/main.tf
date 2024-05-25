@@ -9,7 +9,7 @@ data "aws_ami" "amazon-ubuntu" {
 
   filter {
     name   = "name"
-    values = ["*ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["*images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
   }
 }
 
@@ -26,14 +26,14 @@ resource "aws_security_group" "instance" {
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = 5000
+    to_port     = 5000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 4000
+    to_port     = 4000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
