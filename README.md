@@ -1,7 +1,5 @@
 # DevOps Exercise
 
-## Process
-
 ## Project Requirements
 
 ### Overview
