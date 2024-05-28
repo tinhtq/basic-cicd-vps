@@ -11,6 +11,8 @@ terraform init
 terraform apply --auto-approve
 ```
 
+[output](./image/output.png)
+
 Update the IP in `docker-compose.yaml` file. Create a directory in Ec2 that contains the docker-compose file. Save it as **DIRECTORY** variable.
 
 **Step 2:** Create Repository Secrets
