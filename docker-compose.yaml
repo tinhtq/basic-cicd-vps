@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+  backend:
+    image: ghcr.io/Ngozi34/May-backend:latest
+    container_name: backend
+    ports:
+      - "4000:4000"
+    environment:
+      - REDIS_SERVER=redis:6379
+  frontend:
+    image: ghcr.io/Ngozi34/May-frontend:latest
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - BACKEND_API_URL=http://18.61.237.145:4000
+      - CLIENT_API_URL=http://18.61.237.145:400

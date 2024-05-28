@@ -1,67 +1,97 @@
 # DevOps Exercise
 
-## Project Requirements
+**Step 1:** Provision EC2
 
-### Overview
+Go to the infrastructure folder
 
-Write **Terraform** that can be used to deploy the three-tiered "click counter" application contained in this repository. Use the `front`, `back`, and `redis` images detailed below.
+Execute the bellow command to provision EC2 with Docker installed
 
-- Use Dockerfile in the `front` directory of this repo to build `front` image
-- Use Dockerfile in the `back` directory of this repo to build `back` image
-- Push built images to free container registry like Dockerhub, Github Packages, or AWS ECR
-- Use any version of `redis` from Dockerhub
-- Use AWS free-tier option(s) like **EC2** and/or **Lambda + API Gateway** for running containers
-- Use **Terraform**, your choice of CI/CD solution, and/or any additional scripting to deploy the containers
+```bash
+terraform init
+terraform apply --auto-approve
+```
 
-If you have questions or something seems "not right", please reach out via email.
+Update the IP in `docker-compose.yaml` file. Create a directory in Ec2 that contains the docker-compose file. Save it as **DIRECTORY** variable.
 
-### Application details
+**Step 2:** Create Repository Secrets
 
-- `back` app
-  - Requires these ENV vars:
-    - `REDIS_SERVER` - Address of Redis container in the form of `<host>:<port>`
-  - Binds to port
-    - `4000`
-  - Provides these endpoints:
-    - `/api/clicks` - Returns current click count
-    - `/api/clicks/incr` - Increments click count by 1 and returns new click count
-    - `/api/ping` - Returns static "pong" response
-- `front` app
+Go to Settings → Secrets and variables → Repository secrets → New repository secret.
 
-  - Requires these ENV vars:
-    - `BACKEND_API_URL` - Address of the Back container reachable from the server-side in the form of `http://<host>`
-    - `CLIENT_API_URL` - Address of the Back container reachable from the client-side in the form of `http://<host>`
-    - Note: depending on how you've networked the containers, these to vars could be the same
-  - Binds to port
-    - `3000`
-  - Provides:
-    - `/` - Click counter display/UI
-    - `/ping` - Returns static "pong" response
+![Image](./image/secrets.png)
 
-- `redis` image
-  - Requires these ENV vars:
-    - None
-  - Binds to port
-    - `6379`
+**Step 3**: Create a Github Workflow
 
-### Extra credit
+Create `.github/workflows/deploy.yaml` file
 
-- Hide the `3000`/`4000` ports and make the service available over port `80` using the method of your choice
-- Add healthchecks to `front` and `back` apps using the ping endpoint each app provides
-- Implement basic security measures
-- Add DNS or other customizations
+```docker
+name: Deploy to VPS
+on:
+  push:
+    branches:
+      - main
 
-### Example
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set SHA-COMMIT
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: back
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/Ngozi34/May-backend:latest
+            ghcr.io/Ngozi34/May-backend:${{ steps.vars.outputs.sha_short }}
 
-https://devops-exercise.tblk.us
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: front
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/Ngozi34/May-frontend:latest
+            ghcr.io/Ngozi34/May-frontend:${{ steps.vars.outputs.sha_short }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          command_timeout: 30m
+          script: |
+            cd ${{ vars.DIRECTORY }}
+            docker compose pull
+            docker compose up -d
+```
 
-![image](https://user-images.githubusercontent.com/68586/162465910-892c2e8d-be41-4852-87c7-9ead1ca2e966.png)
+**Step 4**: Test it
 
-## Interview
+Push a commit to this repository and see the result.
 
-During your online interview, we will:
-
-- Walk through your solution and use it to deploy the application
-- Discuss any challenges and successes of your implementation
-- Cover additional questions, both technical and otherwise
-- Answer any questions you may have
+![Deployment](./image/deploy.png)
