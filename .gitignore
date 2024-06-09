@@ -92,3 +92,4 @@ sw.*
 *tfstate*
 
 .terraform
+.terraform.*
