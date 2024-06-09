@@ -1,5 +1,7 @@
 # DevOps Exercise
 
+## Walkthrough
+
 **Step 1:** Provision EC2
 
 Go to the infrastructure folder
@@ -97,3 +99,7 @@ jobs:
 Push a commit to this repository and see the result.
 
 ![Deployment](./image/deploy.png)
+
+## Preferences
+
+[My Article in Medium](https://medium.com/@tinhtq97/basic-cicd-with-github-action-a3aae8f233d1)
