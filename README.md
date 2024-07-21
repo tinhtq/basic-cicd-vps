@@ -63,8 +63,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/Ngozi34/May-backend:latest
-            ghcr.io/Ngozi34/May-backend:${{ steps.vars.outputs.sha_short }}
+            ghcr.io/tinhtq/May-backend:latest
+            ghcr.io/tinhtq/May-backend:${{ steps.vars.outputs.sha_short }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
@@ -73,8 +73,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/Ngozi34/May-frontend:latest
-            ghcr.io/Ngozi34/May-frontend:${{ steps.vars.outputs.sha_short }}
+            ghcr.io/tinhtq/May-frontend:latest
+            ghcr.io/tinhtq/May-frontend:${{ steps.vars.outputs.sha_short }}
   deploy:
     needs: build
     runs-on: ubuntu-latest
